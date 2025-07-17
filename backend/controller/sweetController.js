@@ -10,6 +10,15 @@ const addSweet = async (req, res) => {
     }
 };
 
+const getAllSweets = async (req, res) => {
+    try {
+        const sweets = await Sweet.find({});
+        res.status(200).json(sweets);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 const deleteSweet = async (req, res) => {
     try {
         const { id } = req.params;
@@ -26,4 +35,4 @@ const deleteSweet = async (req, res) => {
     }
 }
 
-module.exports = { addSweet, deleteSweet };
+module.exports = { addSweet, deleteSweet, getAllSweets };

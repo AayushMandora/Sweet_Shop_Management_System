@@ -51,6 +51,30 @@ describe('Sweet API', () => {
         });
     });
 
+    // Get All Sweet Test
+    describe('GET /api/sweets', () => {
+        beforeEach(async () => {
+            await Sweet.insertMany([...addTests]);
+        });
+
+        afterEach(async () => {
+            await Sweet.deleteMany();
+        });
+
+        it('should return all sweets in the database', async () => {
+            const res = await request(app).get('/api/sweets');
+
+            expect(res.statusCode).toBe(200);
+            expect(Array.isArray(res.body)).toBe(true);
+            expect(res.body.length).toBe(addTests.length);
+
+            const names = res.body.map(sweet => sweet.name);
+            for (const sweet of addTests) {
+                expect(names).toContain(sweet.name);
+            }
+        });
+    });
+
     // Delete Sweet By ID
     describe('DELETE /api/sweets/:id', () => {
         let sweetId;
