@@ -53,4 +53,40 @@ const deleteSweet = async (req, res) => {
     }
 }
 
-module.exports = { addSweet, deleteSweet, getAllSweets };
+const purchaseSweet = async (req, res) => {
+    try {
+        const { quantity } = req.body;
+
+        const sweet = await Sweet.findById(req.params.id);
+        if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
+
+        if (sweet.quantity < quantity) {
+            return res.status(400).json({ error: 'Insufficient stock available' });
+        }
+
+        sweet.quantity -= quantity;
+        await sweet.save();
+
+        res.status(200).json({ message: 'Purchase successful', sweet });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+const restockSweet = async (req, res) => {
+    try {
+        const { quantity } = req.body;
+
+        const sweet = await Sweet.findById(req.params.id);
+        if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
+
+        sweet.quantity += quantity;
+        await sweet.save();
+
+        res.status(200).json({ message: 'Restocked successfully', sweet });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+module.exports = { addSweet, deleteSweet, getAllSweets, purchaseSweet, restockSweet };

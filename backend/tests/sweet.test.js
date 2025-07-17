@@ -139,4 +139,67 @@ describe('Sweet API', () => {
             expect(res.body.error).toBe('Sweet not found');
         });
     })
+
+    // Purchase Sweet (Decrease Quantity)
+    describe('POST /api/sweets/:id/purchase', () => {
+        let sweet;
+
+        beforeEach(async () => {
+            sweet = await Sweet.create({
+                name: 'Test Sweet',
+                category: 'Milk-Based',
+                price: 15,
+                quantity: 10
+            });
+        });
+
+        afterEach(async () => {
+            await Sweet.deleteMany();
+        });
+
+        it('should purchase a sweet if stock is available', async () => {
+            const res = await request(app)
+                .post(`/api/sweets/${sweet._id}/purchase`)
+                .send({ quantity: 3 });
+
+            expect(res.statusCode).toBe(200);
+            expect(res.body.sweet.quantity).toBe(7);
+        });
+
+        it('should return error if stock is insufficient', async () => {
+            const res = await request(app)
+                .post(`/api/sweets/${sweet._id}/purchase`)
+                .send({ quantity: 20 });
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body.error).toBe('Insufficient stock available');
+        });
+    });
+
+    // Restock Sweet (Increase Quantity)
+    describe('POST /api/sweets/:id/restock', () => {
+        let sweet;
+
+        beforeEach(async () => {
+            sweet = await Sweet.create({
+                name: 'Test Sweet',
+                category: 'Milk-Based',
+                price: 15,
+                quantity: 5
+            });
+        });
+
+        afterEach(async () => {
+            await Sweet.deleteMany();
+        });
+
+        it('should restock a sweet by increasing quantity', async () => {
+            const res = await request(app)
+                .post(`/api/sweets/${sweet._id}/restock`)
+                .send({ quantity: 10 });
+
+            expect(res.statusCode).toBe(200);
+            expect(res.body.sweet.quantity).toBe(15);
+        });
+    });
 });
