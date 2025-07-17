@@ -108,8 +108,8 @@ const Sweets = () => {
                     <table className="min-w-full bg-gray-800 rounded shadow">
                         <thead>
                             <tr>
-                                <th className="px-4 py-2">Name</th>
                                 <th className="px-4 py-2">Category</th>
+                                <th className="px-4 py-2">Name</th>
                                 <th className="px-4 py-2">Price</th>
                                 <th className="px-4 py-2">Quantity</th>
                                 <th className="px-4 py-2">Actions</th>
