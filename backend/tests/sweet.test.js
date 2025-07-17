@@ -75,6 +75,30 @@ describe('Sweet API', () => {
         });
     });
 
+    // Get sweet by search & price range sort (Price Filter)
+    describe('GET /api/sweets with query params (Filter)', () => {
+        beforeEach(async () => {
+            await Sweet.insertMany([...addTests]);
+        });
+
+        afterEach(async () => {
+            await Sweet.deleteMany();
+        });
+
+        it('should return sweets matching name query', async () => {
+            const res = await request(app).get('/api/sweets?name=jamun');
+            expect(res.statusCode).toBe(200);
+            expect(res.body.length).toBe(1);
+            expect(res.body[0].name).toMatch(/jamun/i);
+        });
+
+        it('should return sweets in price range', async () => {
+            const res = await request(app).get('/api/sweets?minPrice=25&maxPrice=60');
+            expect(res.statusCode).toBe(200);
+            expect(res.body.length).toBe(2); // Kaju Katli and Gajar Halwa 
+        });
+    });
+
     // Delete Sweet By ID
     describe('DELETE /api/sweets/:id', () => {
         let sweetId;
